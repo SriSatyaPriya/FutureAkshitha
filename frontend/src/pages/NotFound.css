@@ -1,0 +1,261 @@
+.not-found-page {
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(196, 154, 69, 0.09), transparent 28%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2f8 100%);
+  box-sizing: border-box;
+}
+
+.not-found-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  max-width: 720px;
+  padding: 44px 36px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  box-shadow: 0 20px 55px rgba(2, 12, 46, 0.1);
+}
+
+.not-found-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -95px;
+  right: -85px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  background: rgba(196, 154, 69, 0.08);
+}
+
+.not-found-illustration {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+}
+
+.not-found-orbit {
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(196, 154, 69, 0.55);
+  border-radius: 50%;
+}
+
+.not-found-orbit-one {
+  transform: rotate(28deg) scaleX(0.72);
+}
+
+.not-found-orbit-two {
+  transform: rotate(-28deg) scaleX(0.72);
+  border-color: rgba(2, 12, 46, 0.22);
+}
+
+.not-found-compass {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  color: #c49a45;
+  background: #020c2e;
+  border: 4px solid #fff;
+  border-radius: 22px;
+  box-shadow: 0 8px 22px rgba(2, 12, 46, 0.18);
+}
+
+.not-found-code {
+  display: block;
+  margin-bottom: 12px;
+  color: #c49a45;
+  font-size: clamp(60px, 10vw, 82px);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.not-found-card h1 {
+  margin: 0 0 14px;
+  color: #020c2e;
+  font-size: clamp(25px, 4vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.not-found-card > p {
+  margin: 0 auto 26px;
+  max-width: 440px;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.not-found-back,
+.not-found-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 12px 18px;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.not-found-back {
+  color: #020c2e;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+}
+
+.not-found-back:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+.not-found-home {
+  color: #fff;
+  background: #020c2e;
+  border: 1px solid #020c2e;
+}
+
+.not-found-home:hover {
+  background: #10245b;
+  box-shadow: 0 7px 18px rgba(2, 12, 46, 0.18);
+  transform: translateY(-1px);
+}
+
+.not-found-back:focus-visible,
+.not-found-home:focus-visible,
+.not-found-shortcuts a:focus-visible {
+  outline: 3px solid rgba(196, 154, 69, 0.7);
+  outline-offset: 3px;
+}
+
+.not-found-help {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 30px;
+  padding: 20px;
+  text-align: left;
+  background: #f8fafc;
+  border: 1px solid #e8edf4;
+  border-radius: 16px;
+}
+
+.not-found-help-icon {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #c49a45;
+  background: #020c2e;
+  border-radius: 12px;
+}
+
+.not-found-help strong {
+  display: block;
+  margin: 2px 0 5px;
+  color: #020c2e;
+  font-size: 15px;
+}
+
+.not-found-help p {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.not-found-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.not-found-shortcuts a {
+  color: #10245b;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.not-found-shortcuts a:hover {
+  color: #9b742b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .not-found-page {
+    min-height: 70vh;
+    padding: 28px 14px;
+  }
+
+  .not-found-card {
+    padding: 32px 18px 22px;
+    border-radius: 18px;
+  }
+
+  .not-found-illustration {
+    width: 88px;
+    height: 88px;
+  }
+
+  .not-found-compass {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+  }
+
+  .not-found-actions {
+    flex-direction: column;
+  }
+
+  .not-found-back,
+  .not-found-home {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .not-found-help {
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .not-found-shortcuts {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .not-found-back,
+  .not-found-home {
+    transition: none;
+  }
+}

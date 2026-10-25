@@ -1,0 +1,39 @@
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 16px;
+  color: #0b1f4d;
+  text-align: center;
+}
+
+.loading-spinner p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.loading-spinner-icon {
+  animation: loading-spin 1s linear infinite;
+  color: #c5a45d;
+}
+
+.loading-spinner-full-page {
+  min-height: 60vh;
+  width: 100%;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner-icon {
+    animation-duration: 2s;
+  }
+}

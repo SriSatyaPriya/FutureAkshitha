@@ -1,0 +1,61 @@
+
+.app-notification {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  margin: 12px 0;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.app-notification p {
+  flex: 1;
+  margin: 0;
+}
+
+.app-notification button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.app-notification button:hover {
+  background: rgb(0 0 0 / 6%);
+}
+
+.notification-success {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.notification-error {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.notification-info {
+  color: #1e40af;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+@media (max-width: 600px) {
+  .app-notification {
+    padding: 12px;
+    gap: 8px;
+    font-size: 13px;
+  }
+}
+

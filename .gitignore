@@ -1,0 +1,30 @@
+
+@'
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+!frontend/.env.production
+
+# Build outputs
+frontend/dist/
+backend/dist/
+dist/
+
+# Private uploaded documents
+backend/private-documents/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local editor and operating system files
+.vscode/
+.DS_Store
+Thumbs.db
+'@ | Set-Content -Path .gitignore -Encoding utf8
