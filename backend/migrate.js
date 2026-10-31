@@ -128,6 +128,80 @@ async function main() {
   await addColumnIfMissing("companies", "reviewer_note VARCHAR(500) NULL");
   await addColumnIfMissing("companies", "reviewed_at TIMESTAMP NULL");
 
+  await addColumnIfMissing("courses", "credits INT NULL DEFAULT 0");
+  console.log("ok: courses.credits column");
+
+  // Catalogue metadata columns (added to existing courses table, never drops data).
+  await addColumnIfMissing("courses", "item_type ENUM('course','internship','project') DEFAULT 'course'");
+  await addColumnIfMissing("courses", "source_annexure VARCHAR(40) NULL");
+  await addColumnIfMissing("courses", "source_category VARCHAR(100) NULL");
+  await addColumnIfMissing("courses", "source_order INT NULL");
+  await addColumnIfMissing("courses", "language VARCHAR(30) NULL");
+  await addColumnIfMissing("courses", "vertical VARCHAR(100) NULL");
+  await addColumnIfMissing("courses", "skills VARCHAR(500) NULL");
+  await addColumnIfMissing("courses", "delivery_mode VARCHAR(100) NULL");
+  await addColumnIfMissing("courses", "duration_hours INT NULL");
+  await addColumnIfMissing("courses", "duration_weeks INT NULL");
+  console.log("ok: catalogue metadata columns");
+
+  // Widen status enum to support draft / published / archived (adds values, keeps existing).
+  try {
+    await pool.query(
+      "ALTER TABLE courses MODIFY COLUMN status ENUM('active','inactive','draft','published','archived') DEFAULT 'published'"
+    );
+    console.log("ok: courses.status widened");
+  } catch (error) {
+    console.warn("skip status widen:", error.message);
+  }
+
+  // Unique key for idempotent re-seeding (never duplicates).
+  const [uk] = await pool.query(
+    `SELECT 1 FROM information_schema.TABLE_CONSTRAINTS
+      WHERE CONSTRAINT_SCHEMA = DATABASE()
+        AND TABLE_NAME = 'courses' AND CONSTRAINT_NAME = 'unique_catalogue_record'`
+  );
+  if (!uk[0]?.length) {
+    try {
+      await pool.query(
+        `ALTER TABLE courses ADD CONSTRAINT unique_catalogue_record UNIQUE (source_annexure, source_order)`
+      );
+      console.log("+ unique courses(source_annexure, source_order)");
+    } catch (error) {
+      console.warn("skip unique catalogue key:", error.message);
+    }
+  }
+
+  // Idempotent seed of all 161 catalogue records from Annexures A-D.
+  const { RECORDS } = require("./catalogue-seed");
+  if (RECORDS && RECORDS.length > 0) {
+    const values = RECORDS.map((r) => [
+      r.title,
+      r.description,
+      r.domain,
+      r.duration,
+      r.fee,
+      r.credits,
+      r.status,
+      r.item_type,
+      r.source_annexure,
+      r.source_category,
+      r.source_order,
+      r.language,
+      r.vertical,
+      r.skills,
+      r.delivery_mode,
+      r.duration_hours,
+      r.duration_weeks,
+    ]);
+    const placeholders = values.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const flat = values.flat();
+    await pool.query(
+      `INSERT IGNORE INTO courses (title, description, domain, duration, fee, credits, status, item_type, source_annexure, source_category, source_order, language, vertical, skills, delivery_mode, duration_hours, duration_weeks) VALUES ${placeholders}`,
+      flat
+    );
+    console.log(`ok: seeded ${RECORDS.length} catalogue records`);
+  }
+
   // Student academic profile fields (Part 2 requirements)
   await addColumnIfMissing("users", "college VARCHAR(200) NULL");
   await addColumnIfMissing("users", "course VARCHAR(120) NULL");

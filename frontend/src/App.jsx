@@ -16,6 +16,7 @@ import {
 } from "react-router-dom";
 import { getCurrentUser } from "./services/demoStore";
 import { apiRequest } from "./services/api";
+import heroImage from "./assets/hero-team.png";
 import Courses from "./pages/Courses";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -265,7 +266,7 @@ function Navbar() {
 function Home() {
   return (
     <main>
-      <section className="hero" id="home">
+      <section className="hero" id="home" style={{ backgroundImage: `linear-gradient(120deg, rgba(7, 17, 35, 0.9), rgba(7, 17, 35, 0.55)), url(${heroImage})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
         <div className="hero-content">
           <span className="eyebrow">YOUR FUTURE STARTS HERE</span>
           <h1>Build Skills.<br />Find Opportunity.<br /><span>Start Your Career.</span></h1>

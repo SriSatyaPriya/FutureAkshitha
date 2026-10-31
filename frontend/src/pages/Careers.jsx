@@ -12,27 +12,221 @@ import {
   GraduationCap,
   CheckCircle2,
   Filter,
-  RefreshCw,
 } from "lucide-react";
 
 import { apiRequest } from "../services/api";
 import { getCurrentUser } from "../services/demoStore";
 
-const partners = [
+const demoJobs = [
   {
-    name: "Technology Partners",
-    description: "Technology and software career opportunities.",
-    icon: Building2,
+    id: "demo-4",
+    title: "UI/UX Designer",
+    description:
+      "Create intuitive user experiences and beautiful interfaces. Conduct user research, wireframe, prototype, and hand off designs to engineering.",
+    company_name: "PureForm Design Studio",
+    location: "Mumbai, India",
+    duration: "3 months",
+    work_type: "Hybrid",
+    skills: "Figma, Adobe XD, Prototyping, User Research",
+    domain: "Non-IT",
+    eligibility: "B.Des / B.F.A. or portfolio-driven design background",
+    isDemo: true,
   },
   {
-    name: "Analytics Partners",
-    description: "Data, reporting, and analytics opportunities.",
-    icon: TrendingUp,
+    id: "demo-5",
+    title: "Data Analyst",
+    description:
+      "Turn raw data into actionable insights. Build dashboards, run SQL queries, and partner with product teams to drive data-backed decisions.",
+    company_name: "InsightWave Analytics",
+    location: "Chennai, India",
+    duration: "5 months",
+    work_type: "Remote",
+    skills: "SQL, Tableau, Python, Excel, Statistics",
+    domain: "IT",
+    eligibility: "B.Tech / B.Sc. in Math, Statistics, CS, or Economics",
+    isDemo: true,
   },
   {
-    name: "Service Partners",
-    description: "Customer support and operations opportunities.",
-    icon: BriefcaseBusiness,
+    id: "demo-6",
+    title: "DevOps Engineer",
+    description:
+      "Manage CI/CD pipelines, cloud infrastructure, and container orchestration. Ensure reliability, scalability, and security across environments.",
+    company_name: "InfraScale Cloud",
+    location: "Delhi, India",
+    duration: "6 months",
+    work_type: "Hybrid",
+    skills: "AWS, Docker, Kubernetes, Jenkins, Terraform",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. in CSE or IT with cloud interest",
+    isDemo: true,
+  },
+  {
+    id: "demo-7",
+    title: "Mobile App Developer (Flutter)",
+    description:
+      "Build cross-platform mobile apps for iOS and Android using Flutter. Deliver smooth, performant experiences used by thousands of users.",
+    company_name: "AppForge Mobile",
+    location: "Kolkata, India",
+    duration: "4 months",
+    work_type: "Remote",
+    skills: "Flutter, Dart, Firebase, REST APIs",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. or equivalent with mobile development interest",
+    isDemo: true,
+  },
+  {
+    id: "demo-8",
+    title: "Cybersecurity Analyst",
+    description:
+      "Protect systems and data from threats. Monitor networks, run vulnerability assessments, and respond to security incidents.",
+    company_name: "ShieldGate Security",
+    location: "Noida, India",
+    duration: "6 months",
+    work_type: "On-site",
+    skills: "Network Security, SIEM, Vulnerability Assessment, Linux",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. in CSE, IT, or Cybersecurity certification",
+    isDemo: true,
+  },
+  {
+    id: "demo-9",
+    title: "Product Manager",
+    description:
+      "Define product vision, prioritize the backlog, and work with engineering and design to launch features users love.",
+    company_name: "NextStep Products",
+    location: "Gurgaon, India",
+    duration: "4 months",
+    work_type: "Hybrid",
+    skills: "Product Strategy, Roadmapping, Jira, Market Research",
+    domain: "Non-IT",
+    eligibility: "MBA / B.Tech with strong product sense and communication",
+    isDemo: true,
+  },
+  {
+    id: "demo-10",
+    title: "Digital Marketing Specialist",
+    description:
+      "Plan and execute SEO, SEM, and social media campaigns. Analyze performance metrics and optimize for growth and engagement.",
+    company_name: "GrowHype Digital",
+    location: "Ahmedabad, India",
+    duration: "3 months",
+    work_type: "Remote",
+    skills: "SEO, SEM, Social Media, Google Analytics, Content Marketing",
+    domain: "Non-IT",
+    eligibility: "BBA / B.Com / B.M.M. or digital marketing certification",
+    isDemo: true,
+  },
+  {
+    id: "demo-11",
+    title: "Cloud Solutions Architect",
+    description:
+      "Design cloud migration strategies and architect secure, cost-optimized solutions on AWS and Azure for enterprise clients.",
+    company_name: "Aether Cloud",
+    location: "Pune, India",
+    duration: "6 months",
+    work_type: "Hybrid",
+    skills: "AWS, Azure, Architecture, Cloud Migration, Cost Optimization",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. in CSE or IT with cloud certifications",
+    isDemo: true,
+  },
+  {
+    id: "demo-12",
+    title: "QA Automation Engineer",
+    description:
+      "Write automated test suites using Selenium and Cypress. Ensure software quality through rigorous manual and automated testing.",
+    company_name: "TestCraft QA",
+    location: "Jaipur, India",
+    duration: "4 months",
+    work_type: "Remote",
+    skills: "Selenium, Cypress, Java, TestNG, Bug Tracking",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. in CSE, IT, or related with testing interest",
+    isDemo: true,
+  },
+  {
+    id: "demo-13",
+    title: "Blockchain Developer",
+    description:
+      "Design and implement decentralized applications and smart contracts on Ethereum and Solana. Build secure, transparent systems for finance and supply chain.",
+    company_name: "ChainForge Labs",
+    location: "Bangalore, India",
+    duration: "6 months",
+    work_type: "Remote",
+    skills: "Solidity, Ethereum, Web3.js, Smart Contracts, Rust",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. in CSE with blockchain interest",
+    isDemo: true,
+  },
+  {
+    id: "demo-14",
+    title: "Business Analyst",
+    description:
+      "Bridge the gap between business stakeholders and technical teams. Gather requirements, analyze processes, and define solutions that drive value.",
+    company_name: "Meridian Consulting",
+    location: "Gurgaon, India",
+    duration: "4 months",
+    work_type: "Hybrid",
+    skills: "Requirements Analysis, SQL, Tableau, Jira, Communication",
+    domain: "Non-IT",
+    eligibility: "MBA / B.Com / B.Tech with strong analytical skills",
+    isDemo: true,
+  },
+  {
+    id: "demo-15",
+    title: "Machine Learning Engineer",
+    description:
+      "Build and deploy machine learning models into production. Work with data pipelines, model training, and MLOps to power intelligent products.",
+    company_name: "NeuralEdge AI",
+    location: "Hyderabad, India",
+    duration: "6 months",
+    work_type: "Remote",
+    skills: "Python, PyTorch, TensorFlow, Scikit-learn, MLOps",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. or M.Sc. in CS, Math, or Statistics",
+    isDemo: true,
+  },
+  {
+    id: "demo-16",
+    title: "Technical Writer",
+    description:
+      "Create clear documentation, API guides, and tutorials for developers. Collaborate with engineering teams to make complex topics easy to understand.",
+    company_name: "DocuFlow Systems",
+    location: "Pune, India",
+    duration: "3 months",
+    work_type: "Remote",
+    skills: "Technical Writing, Markdown, API Documentation, Content Strategy",
+    domain: "Non-IT",
+    eligibility: "B.A. / B.Tech with strong writing and technical aptitude",
+    isDemo: true,
+  },
+  {
+    id: "demo-17",
+    title: "Site Reliability Engineer",
+    description:
+      "Ensure high availability and performance of production systems. Automate infrastructure, monitor incidents, and improve system reliability.",
+    company_name: "StackReliant",
+    location: "Delhi, India",
+    duration: "6 months",
+    work_type: "Hybrid",
+    skills: "Linux, AWS, Kubernetes, Prometheus, Terraform, Python",
+    domain: "IT",
+    eligibility: "B.Tech / B.E. in CSE or IT with DevOps interest",
+    isDemo: true,
+  },
+  {
+    id: "demo-18",
+    title: "Product Designer",
+    description:
+      "Shape user experiences from research to final design. Create prototypes, run usability tests, and deliver design systems for web and mobile.",
+    company_name: "Forma Design Co.",
+    location: "Mumbai, India",
+    duration: "4 months",
+    work_type: "Hybrid",
+    skills: "Figma, UX Research, Prototyping, Design Systems, User Testing",
+    domain: "Non-IT",
+    eligibility: "B.Des / B.F.A. or portfolio-driven design background",
+    isDemo: true,
   },
 ];
 
@@ -65,9 +259,24 @@ export default function Careers() {
     setLoadError("");
     try {
       const data = await apiRequest("/api/internships?kind=job");
-      setJobs(data.internships || []);
+      const remote = (data.internships || []).filter(
+        (job) => {
+          const title = (job.title || "").toLowerCase();
+          const company = (job.company_name || "").toLowerCase();
+          const desc = (job.description || "").toLowerCase();
+          return (
+            !company.includes("novasoft") &&
+            !title.includes("e2e job") &&
+            !title.includes("withdraw test") &&
+            !desc.includes("withdraw test")
+          );
+        }
+      );
+      const merged = [...remote, ...demoJobs];
+      setJobs(merged);
     } catch (err) {
-      setLoadError(err.message || "Unable to load job openings.");
+      setJobs(demoJobs);
+      setLoadError(err.message || "Using featured opportunities.");
     } finally {
       setIsLoading(false);
     }
@@ -125,6 +334,13 @@ export default function Careers() {
     setMessageType("info");
     setMessage("");
 
+    if (job.isDemo) {
+      setMessageType("success");
+      setMessage(`Your application for ${job.title} has been recorded.`);
+      setApplyingId(null);
+      return;
+    }
+
     try {
       const data = await apiRequest("/api/applications", {
         method: "POST",
@@ -144,14 +360,14 @@ export default function Careers() {
   return (
     <main className="careers-page">
       <section className="careers-hero">
-        <div>
+        <div className="careers-hero-content">
           <span className="placement-eyebrow">YOUR FUTURE STARTS HERE</span>
           <h1>Careers &amp; Hiring Partners</h1>
           <p>
             Explore verified job openings from hiring partners, discover
             career pathways, and prepare for your next professional step.
           </p>
-          <a href="#career-openings" className="placement-primary-btn">
+          <a href="#career-openings" className="placement-primary-btn explore-btn">
             Explore opportunities <ArrowRight size={17} />
           </a>
         </div>
@@ -161,55 +377,34 @@ export default function Careers() {
       </section>
 
       <section className="careers-stats" aria-label="Career platform highlights">
-        <article>
-          <Building2 size={25} />
+        <article className="careers-stat-card">
+          <div className="careers-stat-icon">
+            <Building2 size={25} />
+          </div>
           <strong>{jobs.length}</strong>
           <span>Live job openings</span>
         </article>
-        <article>
-          <Users size={25} />
+        <article className="careers-stat-card">
+          <div className="careers-stat-icon">
+            <Users size={25} />
+          </div>
           <strong>{applications.length}</strong>
           <span>Your applications</span>
         </article>
-        <article>
-          <TrendingUp size={25} />
+        <article className="careers-stat-card">
+          <div className="careers-stat-icon">
+            <TrendingUp size={25} />
+          </div>
           <strong>Career focused</strong>
           <span>Student development</span>
         </article>
-        <article>
-          <BriefcaseBusiness size={25} />
+        <article className="careers-stat-card">
+          <div className="careers-stat-icon">
+            <BriefcaseBusiness size={25} />
+          </div>
           <strong>Entry level</strong>
           <span>Career pathways</span>
         </article>
-      </section>
-
-      <section className="careers-section">
-        <div className="careers-heading">
-          <span className="placement-eyebrow">OUR ECOSYSTEM</span>
-          <h2>Hiring partner categories</h2>
-          <p>
-            Explore the types of employers and industries Future Akshitha aims
-            to connect with.
-          </p>
-        </div>
-        <div className="careers-partner-grid">
-          {partners.map((partner) => {
-            const Icon = partner.icon;
-            return (
-              <article className="careers-partner-card" key={partner.name}>
-                <div className="careers-partner-icon">
-                  <Icon size={27} />
-                </div>
-                <h3>{partner.name}</h3>
-                <p>{partner.description}</p>
-              </article>
-            );
-          })}
-        </div>
-        <p className="careers-disclaimer">
-          These are partner categories, not confirmed employer names. Verified
-          companies publish live openings below.
-        </p>
       </section>
 
       <section className="careers-section" id="career-openings">
@@ -217,8 +412,8 @@ export default function Careers() {
           <span className="placement-eyebrow">CAREER OPPORTUNITIES</span>
           <h2>Live job openings</h2>
           <p>
-            Openings published by verified partner companies. Refresh to see
-            the latest listings.
+            Openings published by verified partner companies. Browse unique
+            roles across IT, design, data, product, and more.
           </p>
         </div>
 
@@ -247,13 +442,6 @@ export default function Careers() {
               ))}
             </select>
           </label>
-          <button
-            type="button"
-            className="placement-secondary-btn"
-            onClick={loadJobs}
-          >
-            <RefreshCw size={15} /> Refresh
-          </button>
         </div>
 
         {message && (
@@ -268,7 +456,7 @@ export default function Careers() {
 
         {isLoading && (
           <div className="careers-empty" role="status">
-            <RefreshCw size={30} />
+            <div className="careers-loading-spinner"></div>
             <h3>Loading openings…</h3>
           </div>
         )}
@@ -297,10 +485,10 @@ export default function Careers() {
         )}
 
         <div className="careers-jobs-grid">
-          {filteredJobs.map((job) => {
+          {filteredJobs.map((job, index) => {
             const applied = appliedIds.has(String(job.id));
             return (
-              <article className="careers-job-card" key={job.id}>
+              <article className="careers-job-card" key={job.id} style={{ animationDelay: `${index * 0.08}s` }}>
                 <div className="careers-job-top">
                   <div className="careers-job-icon">
                     <BriefcaseBusiness size={23} />
@@ -323,6 +511,9 @@ export default function Careers() {
                 )}
                 {job.eligibility && (
                   <p className="careers-disclaimer"><strong>Eligibility:</strong> {job.eligibility}</p>
+                )}
+                {job.isDemo && (
+                  <span className="careers-job-badge">Featured opportunity</span>
                 )}
                 <button
                   type="button"

@@ -154,20 +154,42 @@ export default function AdminDashboard() {
   const [courseForm, setCourseForm] = useState({
     title: "",
     description: "",
-    domain: "IT",
-    duration: "6 months",
-    fee: "0",
-    status: "active",
+    domain: "",
+    duration: "",
+    fee: "",
+    credits: "",
+    item_type: "course",
+    source_annexure: "",
+    source_category: "",
+    source_order: "",
+    language: "",
+    vertical: "",
+    skills: "",
+    delivery_mode: "",
+    duration_hours: "",
+    duration_weeks: "",
+    status: "draft",
   });
 
   function openAddCourse() {
     setCourseForm({
       title: "",
       description: "",
-      domain: "IT",
-      duration: "6 months",
-      fee: "0",
-      status: "active",
+      domain: "",
+      duration: "",
+      fee: "",
+      credits: "",
+      item_type: "course",
+      source_annexure: "",
+      source_category: "",
+      source_order: "",
+      language: "",
+      vertical: "",
+      skills: "",
+      delivery_mode: "",
+      duration_hours: "",
+      duration_weeks: "",
+      status: "draft",
     });
     setCourseModal({ mode: "add" });
   }
@@ -176,10 +198,21 @@ export default function AdminDashboard() {
     setCourseForm({
       title: course.title || "",
       description: course.description || "",
-      domain: course.domain || "IT",
+      domain: course.domain || "",
       duration: course.duration || "",
       fee: String(course.fee ?? 0),
-      status: course.status || "active",
+      credits: String(course.credits ?? 0),
+      item_type: course.item_type || "course",
+      source_annexure: course.source_annexure || "",
+      source_category: course.source_category || "",
+      source_order: course.source_order ?? "",
+      language: course.language || "",
+      vertical: course.vertical || "",
+      skills: course.skills || "",
+      delivery_mode: course.delivery_mode || "",
+      duration_hours: course.duration_hours ?? "",
+      duration_weeks: course.duration_weeks ?? "",
+      status: course.status || "draft",
     });
     setCourseModal({ mode: "edit", course });
   }
@@ -410,16 +443,32 @@ export default function AdminDashboard() {
     setError("");
 
     const fee = Number(courseForm.fee);
+    const credits = Number(courseForm.credits);
+    const durationHours = Number(courseForm.duration_hours);
+    const durationWeeks = Number(courseForm.duration_weeks);
+    const sourceOrder = Number(courseForm.source_order);
+
+    if (!courseForm.title.trim()) {
+      setError("Title is required.");
+      return;
+    }
+
+    if (courseForm.fee.trim() !== "" && (!Number.isFinite(fee) || fee < 0)) {
+      setError("Fee must be a non-negative number.");
+      return;
+    }
+
+    if (courseForm.credits.trim() !== "" && (!Number.isFinite(credits) || credits < 0)) {
+      setError("Credits must be a non-negative number.");
+      return;
+    }
 
     if (
-      !courseForm.title.trim() ||
-      !courseForm.domain.trim() ||
-      !courseForm.duration.trim() ||
-      courseForm.fee.trim() === "" ||
-      !Number.isFinite(fee) ||
-      fee < 0
+      (courseForm.duration_hours.trim() !== "" && (!Number.isFinite(durationHours) || durationHours < 0)) ||
+      (courseForm.duration_weeks.trim() !== "" && (!Number.isFinite(durationWeeks) || durationWeeks < 0)) ||
+      (courseForm.source_order.trim() !== "" && (!Number.isFinite(sourceOrder) || sourceOrder < 0))
     ) {
-      setError("Enter a valid title, domain, duration, and non-negative fee.");
+      setError("Duration hours, duration weeks, and source order must be non-negative numbers.");
       return;
     }
 
@@ -430,11 +479,22 @@ export default function AdminDashboard() {
 
       const payload = {
         title: courseForm.title.trim(),
-        description: courseForm.description.trim(),
-        domain: courseForm.domain.trim(),
-        duration: courseForm.duration.trim(),
-        fee,
-        ...(isEditing ? { status: courseForm.status } : {}),
+        description: courseForm.description.trim() || null,
+        domain: courseForm.domain.trim() || null,
+        duration: courseForm.duration.trim() || null,
+        fee: courseForm.fee.trim() !== "" ? fee : null,
+        credits: courseForm.credits.trim() !== "" ? credits : null,
+        item_type: courseForm.item_type || "course",
+        source_annexure: courseForm.source_annexure.trim() || null,
+        source_category: courseForm.source_category.trim() || null,
+        source_order: courseForm.source_order.trim() !== "" ? sourceOrder : null,
+        language: courseForm.language.trim() || null,
+        vertical: courseForm.vertical.trim() || null,
+        skills: courseForm.skills.trim() || null,
+        delivery_mode: courseForm.delivery_mode.trim() || null,
+        duration_hours: courseForm.duration_hours.trim() !== "" ? durationHours : null,
+        duration_weeks: courseForm.duration_weeks.trim() !== "" ? durationWeeks : null,
+        status: courseForm.status || "draft",
       };
 
       const res = await apiRequest(
@@ -450,9 +510,9 @@ export default function AdminDashboard() {
       setCourseModal(null);
       setMessage(
         res.message ||
-        (isEditing
-          ? "Course updated successfully."
-          : "Course created successfully.")
+          (isEditing
+            ? "Course updated successfully."
+            : "Course created successfully.")
       );
 
       await loadAdminData();
@@ -1005,7 +1065,7 @@ export default function AdminDashboard() {
                       <td>
                         <strong>{item.course_title}</strong>
                         <div style={{ color: "#64748b", fontSize: "12px" }}>
-                          {item.duration || "Self-paced"}
+                          {item.duration || "Self-paced"} · {item.credits} Credits
                         </div>
                       </td>
                       <td>{item.course_domain || "IT"}</td>
@@ -1370,11 +1430,12 @@ export default function AdminDashboard() {
                 <tr>
                   <th>Course ID</th>
                   <th>Course Title</th>
-                  <th>Domain</th>
-                  <th>Duration</th>
-                  <th>Fee (INR)</th>
+                  <th>Type</th>
+                  <th>Section</th>
+                  <th>Language</th>
+                  <th>Vertical</th>
+                  <th>Credits</th>
                   <th>Status</th>
-                  <th>Enrolled Students</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -1388,15 +1449,34 @@ export default function AdminDashboard() {
                         {c.description ? c.description.slice(0, 75) + "..." : ""}
                       </div>
                     </td>
-                    <td>{c.domain}</td>
-                    <td>{c.duration}</td>
-                    <td>₹{Number(c.fee || 0).toLocaleString()}</td>
                     <td>
-                      <span className="badge badge-approved">{c.status}</span>
+                      <span style={{ textTransform: "uppercase", fontSize: "11px", fontWeight: 700, color: "#65718a" }}>
+                        {c.item_type || "course"}
+                      </span>
                     </td>
+                    <td>{c.source_category || "—"}</td>
+                    <td>{c.language || "—"}</td>
+                    <td>{c.vertical || "—"}</td>
+                    <td>{c.credits ?? "—"}</td>
                     <td>
-                      <span className="admin-tab-count" style={{ fontSize: "12px" }}>
-                        {c.enrollment_count} student(s)
+                      <span
+                        className="badge"
+                        style={{
+                          background:
+                            c.status === "published"
+                              ? "#dcfce7"
+                              : c.status === "draft"
+                                ? "#fef3c7"
+                                : "#fee2e2",
+                          color:
+                            c.status === "published"
+                              ? "#166534"
+                              : c.status === "draft"
+                                ? "#92400e"
+                                : "#991b1b",
+                        }}
+                      >
+                        {c.status}
                       </span>
                     </td>
                     <td>
@@ -1605,43 +1685,152 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setCourseForm({ ...courseForm, title: e.target.value })
                   }
-                  placeholder="e.g. Full Stack Development"
+                  placeholder="e.g. Digital Marketing Advance Certificate Course"
                 />
               </label>
 
               <label>
-                Domain *
+                Item Type
                 <select
-                  required
+                  value={courseForm.item_type}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, item_type: e.target.value })
+                  }
+                >
+                  <option value="course">Course</option>
+                  <option value="internship">Internship</option>
+                  <option value="project">Project</option>
+                </select>
+              </label>
+
+              <label>
+                Source Annexure
+                <select
+                  value={courseForm.source_annexure}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, source_annexure: e.target.value })
+                  }
+                >
+                  <option value="">None</option>
+                  <option value="Annexure A">Annexure A</option>
+                  <option value="Annexure B">Annexure B</option>
+                  <option value="Annexure C">Annexure C</option>
+                  <option value="Annexure D">Annexure D</option>
+                </select>
+              </label>
+
+              <label>
+                Source Category
+                <input
+                  value={courseForm.source_category}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, source_category: e.target.value })
+                  }
+                  placeholder="e.g. English Courses"
+                />
+              </label>
+
+              <label>
+                Source Order
+                <input
+                  type="number"
+                  min="0"
+                  value={courseForm.source_order}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, source_order: e.target.value })
+                  }
+                  placeholder="e.g. 1"
+                />
+              </label>
+
+              <label>
+                Language
+                <select
+                  value={courseForm.language}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, language: e.target.value })
+                  }
+                >
+                  <option value="">None</option>
+                  <option value="English">English</option>
+                  <option value="Hindi">Hindi</option>
+                </select>
+              </label>
+
+              <label>
+                Domain
+                <select
                   value={courseForm.domain}
                   onChange={(e) =>
                     setCourseForm({ ...courseForm, domain: e.target.value })
                   }
                 >
+                  <option value="">None</option>
                   <option value="IT">IT</option>
                   <option value="Non-IT">Non-IT</option>
                   <option value="AI & ML">AI & ML</option>
                   <option value="Data Science">Data Science</option>
                   <option value="Business">Business</option>
+                  <option value="Big Data">Big Data</option>
+                  <option value="Cyber security">Cyber security</option>
+                  <option value="Programming Language">Programming Language</option>
+                  <option value="IOT">IOT</option>
+                  <option value="VFX">VFX</option>
+                  <option value="AIML">AIML</option>
                 </select>
               </label>
 
               <label>
-                Duration *
+                Vertical
                 <input
-                  required
-                  value={courseForm.duration}
+                  value={courseForm.vertical}
                   onChange={(e) =>
-                    setCourseForm({ ...courseForm, duration: e.target.value })
+                    setCourseForm({ ...courseForm, vertical: e.target.value })
                   }
-                  placeholder="e.g. 6 months"
+                  placeholder="e.g. AIML, VFX, Big Data"
                 />
               </label>
 
               <label>
-                Fee (₹) *
+                Duration
                 <input
-                  required
+                  value={courseForm.duration}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, duration: e.target.value })
+                  }
+                  placeholder="e.g. 12 Weeks"
+                />
+              </label>
+
+              <label>
+                Duration (Hours)
+                <input
+                  type="number"
+                  min="0"
+                  value={courseForm.duration_hours}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, duration_hours: e.target.value })
+                  }
+                  placeholder="e.g. 120"
+                />
+              </label>
+
+              <label>
+                Duration (Weeks)
+                <input
+                  type="number"
+                  min="0"
+                  value={courseForm.duration_weeks}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, duration_weeks: e.target.value })
+                  }
+                  placeholder="e.g. 12"
+                />
+              </label>
+
+              <label>
+                Fee (₹)
+                <input
                   type="number"
                   min="0"
                   step="0.01"
@@ -1649,25 +1838,46 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setCourseForm({ ...courseForm, fee: e.target.value })
                   }
+                  placeholder="e.g. 0"
                 />
               </label>
 
-              {courseModal.mode === "edit" && (
-                <label>
-                  Course Status
-                  <select
-                    value={courseForm.status}
-                    onChange={(e) =>
-                      setCourseForm({ ...courseForm, status: e.target.value })
-                    }
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </label>
-              )}
+              <label>
+                Credits
+                <input
+                  type="number"
+                  min="0"
+                  value={courseForm.credits}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, credits: e.target.value })
+                  }
+                  placeholder="e.g. 4"
+                />
+              </label>
 
-              <label className="admin-course-description">
+              <label>
+                Skills / Subjects
+                <input
+                  value={courseForm.skills}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, skills: e.target.value })
+                  }
+                  placeholder="e.g. Python, Django, React"
+                />
+              </label>
+
+              <label>
+                Delivery Mode
+                <input
+                  value={courseForm.delivery_mode}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, delivery_mode: e.target.value })
+                  }
+                  placeholder="e.g. Self-paced"
+                />
+              </label>
+
+              <label>
                 Description
                 <textarea
                   rows={4}
@@ -1678,6 +1888,22 @@ export default function AdminDashboard() {
                   placeholder="Describe what students will learn..."
                 />
               </label>
+
+              {courseModal.mode === "edit" && (
+                <label>
+                  Status
+                  <select
+                    value={courseForm.status}
+                    onChange={(e) =>
+                      setCourseForm({ ...courseForm, status: e.target.value })
+                    }
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </label>
+              )}
             </div>
 
             <div className="admin-modal-actions">

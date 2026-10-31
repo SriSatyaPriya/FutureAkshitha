@@ -117,7 +117,7 @@ router.get("/enrollments", requireAdmin, async (req, res) => {
     const [enrollments] = await pool.execute(`
       SELECT e.id, e.status, e.enrolled_at,
              u.id AS student_id, u.full_name AS student_name, u.email AS student_email, u.phone AS student_phone,
-             c.id AS course_id, c.title AS course_title, c.domain AS course_domain, c.duration, c.fee
+             c.id AS course_id, c.title AS course_title, c.domain AS course_domain, c.duration, c.fee, c.credits
       FROM enrollments e
       JOIN users u ON u.id = e.student_id
       JOIN courses c ON c.id = e.course_id
@@ -336,7 +336,9 @@ router.patch("/companies/:id/verification", requireAdmin, async (req, res) => {
 router.get("/courses", requireAdmin, async (req, res) => {
   try {
     const [courses] = await pool.execute(`
-      SELECT c.id, c.title, c.description, c.domain, c.duration, c.fee, c.status, c.created_at,
+      SELECT c.id, c.title, c.description, c.domain, c.duration, c.fee, c.credits, c.status, c.item_type,
+             c.source_annexure, c.source_category, c.source_order, c.language, c.vertical, c.skills,
+             c.delivery_mode, c.duration_hours, c.duration_weeks, c.created_at,
              (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id) AS enrollment_count
       FROM courses c
       ORDER BY c.id DESC
@@ -359,7 +361,7 @@ router.get("/courses", requireAdmin, async (req, res) => {
  */
 router.post("/courses", requireAdmin, async (req, res) => {
   try {
-    const { title, description, domain, duration, fee } = req.body;
+    const { title, description, domain, duration, fee, credits } = req.body;
 
     if (
       typeof title !== "string" ||
@@ -380,15 +382,27 @@ router.post("/courses", requireAdmin, async (req, res) => {
       });
     }
 
+    const creditsValue =
+      credits === undefined || credits === null || credits === ""
+        ? 0
+        : Number(credits);
+    if (!Number.isFinite(creditsValue) || creditsValue < 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Credits must be a valid non-negative number.",
+      });
+    }
+
     const [result] = await pool.execute(
-      `INSERT INTO courses (title, description, domain, duration, fee, status)
-       VALUES (?, ?, ?, ?, ?, 'active')`,
+      `INSERT INTO courses (title, description, domain, duration, fee, credits, status)
+       VALUES (?, ?, ?, ?, ?, ?, 'active')`,
       [
         title.trim(),
         typeof description === "string" ? description.trim() : "",
         domain.trim(),
         duration.trim(),
         Number(fee),
+        creditsValue,
       ]
     );
 
@@ -421,7 +435,7 @@ router.patch("/courses/:id", requireAdmin, async (req, res) => {
       });
     }
 
-    const allowedFields = ["title", "description", "domain", "duration", "fee", "status"];
+    const allowedFields = ["title", "description", "domain", "duration", "fee", "credits", "status"];
     const updates = [];
     const values = [];
 
@@ -443,6 +457,20 @@ router.patch("/courses/:id", requireAdmin, async (req, res) => {
           });
         }
         updates.push("fee = ?");
+        values.push(Number(value));
+      } else if (field === "credits") {
+        if (
+          value === "" ||
+          value === null ||
+          !Number.isFinite(Number(value)) ||
+          Number(value) < 0
+        ) {
+          return res.status(400).json({
+            success: false,
+            message: "Credits must be a valid non-negative number.",
+          });
+        }
+        updates.push("credits = ?");
         values.push(Number(value));
       } else if (field === "status") {
         if (!["active", "inactive"].includes(value)) {

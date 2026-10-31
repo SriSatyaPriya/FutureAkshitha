@@ -136,6 +136,7 @@ export default function StudentDashboard() {
             status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Enrolled",
             enrolledAt: item.enrolled_at || item.enrolledAt,
             fee: item.fee,
+            credits: item.credits,
             duration: item.duration,
           }))
         );
@@ -580,6 +581,7 @@ export default function StudentDashboard() {
               <div>
                 <h3>{getEnrollmentTitle(item)}</h3>
                 {item.category && <p><strong>Category:</strong> {item.category}</p>}
+                {item.credits && <p><strong>Credits:</strong> {item.credits}</p>}
                 {item.enrolledAt && (
                   <p><strong>Enrolled:</strong> {formatDate(item.enrolledAt)}</p>
                 )}

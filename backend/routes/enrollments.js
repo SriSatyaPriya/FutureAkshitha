@@ -71,11 +71,11 @@ router.get("/my", [authenticate, requireRole("student")], async (req, res) => {
   try {
     const [enrollments] = await pool.execute(
       `SELECT e.id, e.student_id, e.status, e.enrolled_at,
-              c.id AS course_id, c.title, c.domain, c.duration, c.fee
-       FROM enrollments e
-       JOIN courses c ON c.id = e.course_id
-       WHERE e.student_id = ?
-       ORDER BY e.id DESC`,
+               c.id AS course_id, c.title, c.domain, c.duration, c.fee, c.credits
+        FROM enrollments e
+        JOIN courses c ON c.id = e.course_id
+        WHERE e.student_id = ?
+        ORDER BY e.id DESC`,
       [req.user.id]
     );
 
